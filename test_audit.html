@@ -1,0 +1,1181 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daftar RM | e-Mediqua | Audit Kelengkapan RME</title>
+    <!-- Google Fonts: Plus Jakarta Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Bootstrap 5.3 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        :root {
+            --primary: #0284c7;
+            --primary-dark: #0369a1;
+            --primary-light: #e0f2fe;
+            --secondary: #0f172a;
+            --sidebar-bg: #0f172a;
+            --sidebar-hover: #1e293b;
+            --sidebar-text: #94a3b8;
+            --sidebar-text-active: #ffffff;
+            --accent-green: #10b981;
+            --accent-yellow: #f59e0b;
+            --accent-red: #ef4444;
+            --bg-body: #f8fafc;
+            --card-border: #e2e8f0;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-body);
+            color: #334155;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Styles */
+        #sidebar {
+            width: 260px;
+            min-height: 100vh;
+            background-color: var(--sidebar-bg);
+            color: var(--sidebar-text);
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            z-index: 1000;
+            transition: all 0.3s ease;
+            box-shadow: 4px 0 15px rgba(0, 0, 0, 0.05);
+        }
+
+        #sidebar .brand-wrapper {
+            padding: 1.5rem 1.25rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        #sidebar .brand-logo {
+            width: 38px;
+            height: 38px;
+            background: linear-gradient(135deg, #0ea5e9, #0284c7);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+            box-shadow: 0 4px 10px rgba(14, 165, 233, 0.3);
+        }
+
+        #sidebar .brand-text {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: #ffffff;
+            letter-spacing: -0.5px;
+        }
+
+        #sidebar .brand-subtitle {
+            font-size: 0.7rem;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+        }
+
+        .nav-category {
+            padding: 1.25rem 1.25rem 0.5rem;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: #64748b;
+            letter-spacing: 1px;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            padding: 0 0.75rem;
+            margin: 0;
+        }
+
+        .sidebar-menu li {
+            margin-bottom: 4px;
+        }
+
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0.75rem 1rem;
+            color: var(--sidebar-text);
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+        }
+
+        .sidebar-menu a:hover {
+            background-color: var(--sidebar-hover);
+            color: var(--sidebar-text-active);
+        }
+
+        .sidebar-menu a.active {
+            background: linear-gradient(90deg, rgba(14, 165, 233, 0.15), rgba(14, 165, 233, 0.05));
+            color: #38bdf8;
+            border-left: 3px solid #38bdf8;
+            font-weight: 600;
+        }
+
+        .sidebar-menu a i {
+            font-size: 1.1rem;
+            width: 20px;
+            text-align: center;
+        }
+
+        /* Content Area */
+        #content-wrapper {
+            margin-left: 260px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+        }
+
+        /* Top Navbar */
+        .top-navbar {
+            background: #ffffff;
+            border-bottom: 1px solid var(--card-border);
+            padding: 0.85rem 1.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 999;
+        }
+
+        .user-pill {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 6px 14px;
+            border-radius: 50px;
+            background: #f1f5f9;
+            border: 1px solid #e2e8f0;
+        }
+
+        .avatar-circle {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #38bdf8, #0284c7);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.85rem;
+        }
+
+        .main-content {
+            padding: 1.75rem;
+            flex: 1;
+        }
+
+        /* Modern Card Styles */
+        .card {
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.02), 0 4px 12px rgba(0,0,0,0.03);
+            background: #ffffff;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-header {
+            background-color: transparent;
+            border-bottom: 1px solid var(--card-border);
+            padding: 1.1rem 1.25rem;
+            font-weight: 700;
+            color: #1e293b;
+        }
+
+        .stat-card {
+            border-radius: 14px;
+            padding: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            background: #ffffff;
+            border: 1px solid var(--card-border);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+        }
+
+        .stat-icon {
+            width: 52px;
+            height: 52px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        /* Status Badges */
+        .badge-lengkap {
+            background-color: #dcfce7;
+            color: #15803d;
+            font-weight: 600;
+            padding: 6px 12px;
+            border-radius: 20px;
+        }
+        .badge-tidak-lengkap {
+            background-color: #fee2e2;
+            color: #b91c1c;
+            font-weight: 600;
+            padding: 6px 12px;
+            border-radius: 20px;
+        }
+        .badge-draft {
+            background-color: #f1f5f9;
+            color: #475569;
+            font-weight: 600;
+            padding: 6px 12px;
+            border-radius: 20px;
+        }
+        .badge-selesai {
+            background-color: #e0f2fe;
+            color: #0369a1;
+            font-weight: 600;
+            padding: 6px 12px;
+            border-radius: 20px;
+        }
+        .badge-diverifikasi {
+            background-color: #ede9fe;
+            color: #6d28d9;
+            font-weight: 600;
+            padding: 6px 12px;
+            border-radius: 20px;
+        }
+
+        footer {
+            padding: 1.25rem 1.75rem;
+            background: #ffffff;
+            border-top: 1px solid var(--card-border);
+            font-size: 0.85rem;
+            color: #64748b;
+        }
+
+        @media (max-width: 991.98px) {
+            #sidebar {
+                margin-left: -260px;
+            }
+            #sidebar.show {
+                margin-left: 0;
+            }
+            #content-wrapper {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Sidebar -->
+    <div id="sidebar" class="d-flex flex-column justify-content-between">
+        <div>
+            <div class="brand-wrapper">
+                <div class="brand-logo" style="background: linear-gradient(135deg, #10b981, #059669); border-radius: 12px; width: 42px; height: 42px; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);">
+                    <i class="fa-solid fa-file-medical text-white fs-5"></i>
+                </div>
+                <div>
+                    <div class="brand-text" style="font-size: 1.2rem; font-weight: 800; letter-spacing: -0.5px;">e-Mediqua</div>
+                    <div class="brand-subtitle" style="font-size: 0.68rem; color: #38bdf8; letter-spacing: 0.6px; font-weight: 600;">AUDIT REKAM MEDIS</div>
+                </div>
+            </div>
+
+            <div class="nav-category" style="color: #64748b; font-size: 0.68rem;">UTAMA</div>
+            <ul class="sidebar-menu">
+                <li>
+                    <a href="http://localhost:8080/dashboard" class="">
+                        <i class="fa-solid fa-chart-pie text-info"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+            </ul>
+
+            <div class="nav-category" style="color: #64748b; font-size: 0.68rem;">AUDIT</div>
+            <ul class="sidebar-menu">
+                <li>
+                    <a href="http://localhost:8080/audit/create" class="" style="">
+                        <i class="fa-solid fa-pen-to-square text-warning"></i>
+                        <span>Input Audit Kuantitatif</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="http://localhost:8080/audit" class="active">
+                        <i class="fa-solid fa-folder-open text-warning"></i>
+                        <span>Daftar Rekam Medis</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="http://localhost:8080/temuan" class="">
+                        <i class="fa-solid fa-triangle-exclamation text-danger"></i>
+                        <span>Tindak Lanjut Temuan</span>
+                    </a>
+                </li>
+            </ul>
+
+            <div class="nav-category" style="color: #64748b; font-size: 0.68rem;">DATA & LAPORAN</div>
+            <ul class="sidebar-menu">
+                <li>
+                    <a href="http://localhost:8080/master" class="">
+                        <i class="fa-solid fa-database" style="color: #a855f7;"></i>
+                        <span>Data Master</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="http://localhost:8080/laporan" class="">
+                        <i class="fa-solid fa-chart-line text-info"></i>
+                        <span>Laporan & Analisis</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="http://localhost:8080/audit/cetak" class="">
+                        <i class="fa-solid fa-print" style="color: #818cf8;"></i>
+                        <span>Cetak Laporan</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Sidebar User & Logout Footer -->
+        <div class="p-3 border-top border-secondary border-opacity-25" style="background: rgba(0,0,0,0.2);">
+            <div class="d-flex flex-column">
+                <span class="text-white-50 small fw-semibold">Administrator Sistem</span>
+                <a href="http://localhost:8080/auth/logout" class="text-decoration-none small mt-1 d-inline-flex align-items-center gap-2" style="color: #94a3b8;">
+                    <span style="display:inline-block; width: 6px; height: 14px; background: #ea580c; border-radius: 2px;"></span>
+                    <span>Logout</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Content Wrapper -->
+    <div id="content-wrapper">
+        <!-- Top Navbar -->
+        <header class="top-navbar">
+            <div class="d-flex align-items-center gap-3">
+                <button class="btn btn-light d-lg-none" id="sidebarToggle">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+                <div class="d-none d-md-block">
+                    <span class="badge bg-primary-subtle text-primary fw-medium px-3 py-2 rounded-pill">
+                        <i class="fa-solid fa-hospital me-1"></i> Permenkes RI No. 24 / 2022
+                    </span>
+                </div>
+            </div>
+
+            <div class="d-flex align-items-center gap-3">
+                <div class="dropdown">
+                    <a href="#" class="text-decoration-none dropdown-toggle user-pill text-dark" data-bs-toggle="dropdown">
+                        <div class="avatar-circle">
+                            A                        </div>
+                        <div class="d-none d-sm-block text-start">
+                            <div class="fw-bold fs-7 lh-1">Administrator Sistem</div>
+                            <small class="text-muted text-uppercase" style="font-size: 0.7rem; font-weight: 600;">
+                                admin                            </small>
+                        </div>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2">
+                        <li>
+                            <div class="px-3 py-2 border-bottom">
+                                <div class="fw-bold">Administrator Sistem</div>
+                                <div class="text-muted small">admin@mediqua.local</div>
+                            </div>
+                        </li>
+                        <li><a class="dropdown-item py-2" href="http://localhost:8080/profile"><i class="fa-solid fa-user me-2 text-primary"></i> Profil & Password</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item py-2 text-danger" href="http://localhost:8080/auth/logout"><i class="fa-solid fa-right-from-bracket me-2"></i> Keluar Sistem</a></li>
+                    </ul>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content Body -->
+        <main class="main-content">
+            <!-- Flash Message Alerts -->
+            
+            
+            
+            <!-- View Content Injection -->
+            <style>
+    /* Styling matching screenshot Daftar Rekam Medis Teraudit */
+    .quali-page-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 1.5rem;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+    .quali-title {
+        font-size: 1.5rem;
+        font-weight: 800;
+        color: #1e293b;
+        margin-bottom: 0.2rem;
+    }
+    .quali-breadcrumb {
+        font-size: 0.85rem;
+        color: #64748b;
+    }
+    .main-section-title {
+        font-size: 1.35rem;
+        font-weight: 800;
+        color: #1e293b;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 0.25rem;
+    }
+    .main-section-sub {
+        font-size: 0.875rem;
+        color: #64748b;
+        margin-bottom: 1.5rem;
+    }
+    .rm-card {
+        background: #ffffff;
+        border-radius: 12px;
+        border: 1px solid #e2e8f0;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+        overflow: hidden;
+        margin-bottom: 2rem;
+    }
+    .rm-card-header {
+        background-color: #f8fafc;
+        border-bottom: 1px solid #e2e8f0;
+        padding: 1rem 1.25rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    .rm-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.875rem;
+        margin: 0;
+    }
+    .rm-table th {
+        background-color: #f8fafc;
+        padding: 0.85rem 1rem;
+        font-size: 0.75rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: #475569;
+        border-bottom: 1.5px solid #e2e8f0;
+    }
+    .rm-table td {
+        padding: 0.9rem 1rem;
+        vertical-align: middle;
+        border-bottom: 1px solid #f1f5f9;
+        color: #334155;
+    }
+    .rm-table tr:hover td {
+        background-color: #fafbfc;
+    }
+    .badge-ruangan {
+        background-color: #eff6ff;
+        color: #2563eb;
+        font-weight: 700;
+        font-size: 0.8rem;
+        padding: 4px 12px;
+        border-radius: 6px;
+        display: inline-block;
+    }
+    .btn-detail-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 5px 14px;
+        border-radius: 50px;
+        border: 1px solid #cbd5e1;
+        background-color: #ffffff;
+        color: #334155;
+        font-size: 0.8rem;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.2s ease;
+    }
+    .btn-detail-pill:hover {
+        background-color: #f1f5f9;
+        border-color: #94a3b8;
+        color: #0f172a;
+        transform: translateY(-1px);
+    }
+    .btn-input-baru {
+        background-color: #0f766e;
+        color: #ffffff;
+        border: none;
+        border-radius: 8px;
+        font-weight: 700;
+        font-size: 0.85rem;
+        padding: 0.5rem 1.1rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        text-decoration: none;
+        transition: all 0.2s ease;
+    }
+    .btn-input-baru:hover {
+        background-color: #115e59;
+        color: #ffffff;
+        box-shadow: 0 4px 10px rgba(15, 118, 110, 0.25);
+    }
+</style>
+
+<!-- Top Header matching screenshot -->
+<div class="quali-page-header">
+    <div>
+        <div class="quali-title">Daftar RM</div>
+        <div class="quali-breadcrumb">e-Mediqua &gt; Rekam Medis Teraudit</div>
+    </div>
+    <div class="d-flex align-items-center gap-2">
+        <div class="d-flex align-items-center gap-2 bg-white px-3 py-1 rounded border shadow-sm">
+            <span class="small fw-semibold text-muted">Tahun:</span>
+            <select name="header_tahun" id="header_tahun_select" class="form-select form-select-sm border-0 fw-bold" style="width: auto; cursor: pointer;" onchange="changeTahun(this.value)">
+                <option value="2026" selected>2026</option>
+                <option value="2025" >2025</option>
+                <option value="2024" >2024</option>
+            </select>
+        </div>
+    </div>
+</div>
+
+<!-- Subheading Section matching screenshot -->
+<div>
+    <div class="main-section-title">
+        <i class="fa-solid fa-folder text-warning"></i>
+        <span>Daftar Rekam Medis Teraudit</span>
+    </div>
+    <p class="main-section-sub">Menampilkan 13 data terbaru tahun 2026</p>
+</div>
+
+<!-- Main Table Card matching screenshot -->
+<div class="rm-card">
+    <div class="rm-card-header">
+        <div class="d-flex align-items-center gap-2 fw-bold text-dark fs-6">
+            <i class="fa-solid fa-folder-open text-warning"></i>
+            <span>Rekam Medis – Tahun 2026</span>
+        </div>
+        <a href="http://localhost:8080/audit/create" class="btn-input-baru">
+            <i class="fa-solid fa-plus"></i>
+            <span>Input Baru</span>
+        </a>
+    </div>
+
+    <div class="table-responsive">
+        <table class="rm-table">
+            <thead>
+                <tr>
+                    <th style="width: 45px;">#</th>
+                    <th style="width: 140px;">NO. RM</th>
+                    <th>NAMA PASIEN</th>
+                    <th>DOKTER</th>
+                    <th>RUANGAN</th>
+                    <th style="width: 130px;">TGL AUDIT</th>
+                    <th style="width: 170px;">KELENGKAPAN</th>
+                    <th style="width: 100px; text-align: center;">AKSI</th>
+                </tr>
+            </thead>
+            <tbody>
+                                                            <tr>
+                            <!-- # -->
+                            <td class="text-muted fw-bold">1</td>
+
+                            <!-- NO. RM -->
+                            <td class="font-monospace fw-bold text-dark fs-7">RM-2026-008</td>
+
+                            <!-- NAMA PASIEN -->
+                            <td class="fw-medium text-dark">Tn. Harun</td>
+
+                            <!-- DOKTER -->
+                            <td>dr. Budi Santoso, Sp.A</td>
+
+                            <!-- RUANGAN -->
+                            <td>
+                                <span class="badge-ruangan">
+                                    Ruang Flamboyan                                </span>
+                            </td>
+
+                            <!-- TGL AUDIT -->
+                            <td class="text-muted">22/10/2026</td>
+
+                            <!-- KELENGKAPAN -->
+                            <td>
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="progress flex-grow-1" style="height: 6px; width: 75px; background-color: #e2e8f0; border-radius: 4px;">
+                                        <div class="progress-bar bg-danger" role="progressbar" style="width: 30%;"></div>
+                                    </div>
+                                    <span class="small fw-bold text-danger" style="min-width: 38px;">
+                                        30%
+                                    </span>
+                                </div>
+                            </td>
+
+                            <!-- AKSI -->
+                            <td style="text-align: center;">
+                                <a href="http://localhost:8080/audit/detail/13" class="btn-detail-pill">
+                                    <i class="fa-solid fa-eye"></i>
+                                    <span>Detail</span>
+                                </a>
+                            </td>
+                        </tr>
+                                            <tr>
+                            <!-- # -->
+                            <td class="text-muted fw-bold">2</td>
+
+                            <!-- NO. RM -->
+                            <td class="font-monospace fw-bold text-dark fs-7">RM-2026-007</td>
+
+                            <!-- NAMA PASIEN -->
+                            <td class="fw-medium text-dark">Ny. Gita</td>
+
+                            <!-- DOKTER -->
+                            <td>dr. Budi Santoso, Sp.A</td>
+
+                            <!-- RUANGAN -->
+                            <td>
+                                <span class="badge-ruangan">
+                                    Ruang Dahlia                                </span>
+                            </td>
+
+                            <!-- TGL AUDIT -->
+                            <td class="text-muted">22/10/2026</td>
+
+                            <!-- KELENGKAPAN -->
+                            <td>
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="progress flex-grow-1" style="height: 6px; width: 75px; background-color: #e2e8f0; border-radius: 4px;">
+                                        <div class="progress-bar bg-warning" role="progressbar" style="width: 50%;"></div>
+                                    </div>
+                                    <span class="small fw-bold text-warning" style="min-width: 38px;">
+                                        50%
+                                    </span>
+                                </div>
+                            </td>
+
+                            <!-- AKSI -->
+                            <td style="text-align: center;">
+                                <a href="http://localhost:8080/audit/detail/12" class="btn-detail-pill">
+                                    <i class="fa-solid fa-eye"></i>
+                                    <span>Detail</span>
+                                </a>
+                            </td>
+                        </tr>
+                                            <tr>
+                            <!-- # -->
+                            <td class="text-muted fw-bold">3</td>
+
+                            <!-- NO. RM -->
+                            <td class="font-monospace fw-bold text-dark fs-7">RM-2026-006</td>
+
+                            <!-- NAMA PASIEN -->
+                            <td class="fw-medium text-dark">Tn. Farhan</td>
+
+                            <!-- DOKTER -->
+                            <td>dr. Budi Santoso, Sp.A</td>
+
+                            <!-- RUANGAN -->
+                            <td>
+                                <span class="badge-ruangan">
+                                    Ruang Dahlia                                </span>
+                            </td>
+
+                            <!-- TGL AUDIT -->
+                            <td class="text-muted">22/10/2026</td>
+
+                            <!-- KELENGKAPAN -->
+                            <td>
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="progress flex-grow-1" style="height: 6px; width: 75px; background-color: #e2e8f0; border-radius: 4px;">
+                                        <div class="progress-bar bg-success" role="progressbar" style="width: 100%;"></div>
+                                    </div>
+                                    <span class="small fw-bold text-success" style="min-width: 38px;">
+                                        100%
+                                    </span>
+                                </div>
+                            </td>
+
+                            <!-- AKSI -->
+                            <td style="text-align: center;">
+                                <a href="http://localhost:8080/audit/detail/11" class="btn-detail-pill">
+                                    <i class="fa-solid fa-eye"></i>
+                                    <span>Detail</span>
+                                </a>
+                            </td>
+                        </tr>
+                                            <tr>
+                            <!-- # -->
+                            <td class="text-muted fw-bold">4</td>
+
+                            <!-- NO. RM -->
+                            <td class="font-monospace fw-bold text-dark fs-7">RM-2026-005</td>
+
+                            <!-- NAMA PASIEN -->
+                            <td class="fw-medium text-dark">Ny. Erna</td>
+
+                            <!-- DOKTER -->
+                            <td>dr. Budi Santoso, Sp.A</td>
+
+                            <!-- RUANGAN -->
+                            <td>
+                                <span class="badge-ruangan">
+                                    Ruang Anggrek                                </span>
+                            </td>
+
+                            <!-- TGL AUDIT -->
+                            <td class="text-muted">22/10/2026</td>
+
+                            <!-- KELENGKAPAN -->
+                            <td>
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="progress flex-grow-1" style="height: 6px; width: 75px; background-color: #e2e8f0; border-radius: 4px;">
+                                        <div class="progress-bar bg-danger" role="progressbar" style="width: 30%;"></div>
+                                    </div>
+                                    <span class="small fw-bold text-danger" style="min-width: 38px;">
+                                        30%
+                                    </span>
+                                </div>
+                            </td>
+
+                            <!-- AKSI -->
+                            <td style="text-align: center;">
+                                <a href="http://localhost:8080/audit/detail/10" class="btn-detail-pill">
+                                    <i class="fa-solid fa-eye"></i>
+                                    <span>Detail</span>
+                                </a>
+                            </td>
+                        </tr>
+                                            <tr>
+                            <!-- # -->
+                            <td class="text-muted fw-bold">5</td>
+
+                            <!-- NO. RM -->
+                            <td class="font-monospace fw-bold text-dark fs-7">RM-2026-004</td>
+
+                            <!-- NAMA PASIEN -->
+                            <td class="fw-medium text-dark">An. Dimas</td>
+
+                            <!-- DOKTER -->
+                            <td>dr. Budi Santoso, Sp.A</td>
+
+                            <!-- RUANGAN -->
+                            <td>
+                                <span class="badge-ruangan">
+                                    Ruang Anggrek                                </span>
+                            </td>
+
+                            <!-- TGL AUDIT -->
+                            <td class="text-muted">22/10/2026</td>
+
+                            <!-- KELENGKAPAN -->
+                            <td>
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="progress flex-grow-1" style="height: 6px; width: 75px; background-color: #e2e8f0; border-radius: 4px;">
+                                        <div class="progress-bar bg-danger" role="progressbar" style="width: 37.5%;"></div>
+                                    </div>
+                                    <span class="small fw-bold text-danger" style="min-width: 38px;">
+                                        37%
+                                    </span>
+                                </div>
+                            </td>
+
+                            <!-- AKSI -->
+                            <td style="text-align: center;">
+                                <a href="http://localhost:8080/audit/detail/9" class="btn-detail-pill">
+                                    <i class="fa-solid fa-eye"></i>
+                                    <span>Detail</span>
+                                </a>
+                            </td>
+                        </tr>
+                                            <tr>
+                            <!-- # -->
+                            <td class="text-muted fw-bold">6</td>
+
+                            <!-- NO. RM -->
+                            <td class="font-monospace fw-bold text-dark fs-7">RM-2026-003</td>
+
+                            <!-- NAMA PASIEN -->
+                            <td class="fw-medium text-dark">Sdr. Chandra</td>
+
+                            <!-- DOKTER -->
+                            <td>dr. Budi Santoso, Sp.A</td>
+
+                            <!-- RUANGAN -->
+                            <td>
+                                <span class="badge-ruangan">
+                                    Ruang Anggrek                                </span>
+                            </td>
+
+                            <!-- TGL AUDIT -->
+                            <td class="text-muted">22/10/2026</td>
+
+                            <!-- KELENGKAPAN -->
+                            <td>
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="progress flex-grow-1" style="height: 6px; width: 75px; background-color: #e2e8f0; border-radius: 4px;">
+                                        <div class="progress-bar bg-danger" role="progressbar" style="width: 45%;"></div>
+                                    </div>
+                                    <span class="small fw-bold text-danger" style="min-width: 38px;">
+                                        45%
+                                    </span>
+                                </div>
+                            </td>
+
+                            <!-- AKSI -->
+                            <td style="text-align: center;">
+                                <a href="http://localhost:8080/audit/detail/8" class="btn-detail-pill">
+                                    <i class="fa-solid fa-eye"></i>
+                                    <span>Detail</span>
+                                </a>
+                            </td>
+                        </tr>
+                                            <tr>
+                            <!-- # -->
+                            <td class="text-muted fw-bold">7</td>
+
+                            <!-- NO. RM -->
+                            <td class="font-monospace fw-bold text-dark fs-7">RM-2026-002</td>
+
+                            <!-- NAMA PASIEN -->
+                            <td class="fw-medium text-dark">Tn. Bambang</td>
+
+                            <!-- DOKTER -->
+                            <td>dr. Budi Santoso, Sp.A</td>
+
+                            <!-- RUANGAN -->
+                            <td>
+                                <span class="badge-ruangan">
+                                    Ruang Anggrek                                </span>
+                            </td>
+
+                            <!-- TGL AUDIT -->
+                            <td class="text-muted">22/10/2026</td>
+
+                            <!-- KELENGKAPAN -->
+                            <td>
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="progress flex-grow-1" style="height: 6px; width: 75px; background-color: #e2e8f0; border-radius: 4px;">
+                                        <div class="progress-bar bg-success" role="progressbar" style="width: 100%;"></div>
+                                    </div>
+                                    <span class="small fw-bold text-success" style="min-width: 38px;">
+                                        100%
+                                    </span>
+                                </div>
+                            </td>
+
+                            <!-- AKSI -->
+                            <td style="text-align: center;">
+                                <a href="http://localhost:8080/audit/detail/7" class="btn-detail-pill">
+                                    <i class="fa-solid fa-eye"></i>
+                                    <span>Detail</span>
+                                </a>
+                            </td>
+                        </tr>
+                                            <tr>
+                            <!-- # -->
+                            <td class="text-muted fw-bold">8</td>
+
+                            <!-- NO. RM -->
+                            <td class="font-monospace fw-bold text-dark fs-7">RM-2026-001</td>
+
+                            <!-- NAMA PASIEN -->
+                            <td class="fw-medium text-dark">Ny. Aminah</td>
+
+                            <!-- DOKTER -->
+                            <td>dr. Budi Santoso, Sp.A</td>
+
+                            <!-- RUANGAN -->
+                            <td>
+                                <span class="badge-ruangan">
+                                    Ruang Anggrek                                </span>
+                            </td>
+
+                            <!-- TGL AUDIT -->
+                            <td class="text-muted">22/10/2026</td>
+
+                            <!-- KELENGKAPAN -->
+                            <td>
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="progress flex-grow-1" style="height: 6px; width: 75px; background-color: #e2e8f0; border-radius: 4px;">
+                                        <div class="progress-bar bg-success" role="progressbar" style="width: 100%;"></div>
+                                    </div>
+                                    <span class="small fw-bold text-success" style="min-width: 38px;">
+                                        100%
+                                    </span>
+                                </div>
+                            </td>
+
+                            <!-- AKSI -->
+                            <td style="text-align: center;">
+                                <a href="http://localhost:8080/audit/detail/6" class="btn-detail-pill">
+                                    <i class="fa-solid fa-eye"></i>
+                                    <span>Detail</span>
+                                </a>
+                            </td>
+                        </tr>
+                                            <tr>
+                            <!-- # -->
+                            <td class="text-muted fw-bold">9</td>
+
+                            <!-- NO. RM -->
+                            <td class="font-monospace fw-bold text-dark fs-7">2306016</td>
+
+                            <!-- NAMA PASIEN -->
+                            <td class="fw-medium text-dark">Ika Ramadani</td>
+
+                            <!-- DOKTER -->
+                            <td>dr. Budi Santoso, Sp.A</td>
+
+                            <!-- RUANGAN -->
+                            <td>
+                                <span class="badge-ruangan">
+                                    Poli Anak                                </span>
+                            </td>
+
+                            <!-- TGL AUDIT -->
+                            <td class="text-muted">22/10/2026</td>
+
+                            <!-- KELENGKAPAN -->
+                            <td>
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="progress flex-grow-1" style="height: 6px; width: 75px; background-color: #e2e8f0; border-radius: 4px;">
+                                        <div class="progress-bar bg-success" role="progressbar" style="width: 100%;"></div>
+                                    </div>
+                                    <span class="small fw-bold text-success" style="min-width: 38px;">
+                                        100%
+                                    </span>
+                                </div>
+                            </td>
+
+                            <!-- AKSI -->
+                            <td style="text-align: center;">
+                                <a href="http://localhost:8080/audit/detail/5" class="btn-detail-pill">
+                                    <i class="fa-solid fa-eye"></i>
+                                    <span>Detail</span>
+                                </a>
+                            </td>
+                        </tr>
+                                            <tr>
+                            <!-- # -->
+                            <td class="text-muted fw-bold">10</td>
+
+                            <!-- NO. RM -->
+                            <td class="font-monospace fw-bold text-dark fs-7">RM-2024-002</td>
+
+                            <!-- NAMA PASIEN -->
+                            <td class="fw-medium text-dark">Dewi Sartika</td>
+
+                            <!-- DOKTER -->
+                            <td>dr. Siti Rahma, Sp.PD</td>
+
+                            <!-- RUANGAN -->
+                            <td>
+                                <span class="badge-ruangan">
+                                    Poli Penyakit Dalam                                </span>
+                            </td>
+
+                            <!-- TGL AUDIT -->
+                            <td class="text-muted">22/10/2026</td>
+
+                            <!-- KELENGKAPAN -->
+                            <td>
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="progress flex-grow-1" style="height: 6px; width: 75px; background-color: #e2e8f0; border-radius: 4px;">
+                                        <div class="progress-bar bg-success" role="progressbar" style="width: 100%;"></div>
+                                    </div>
+                                    <span class="small fw-bold text-success" style="min-width: 38px;">
+                                        100%
+                                    </span>
+                                </div>
+                            </td>
+
+                            <!-- AKSI -->
+                            <td style="text-align: center;">
+                                <a href="http://localhost:8080/audit/detail/4" class="btn-detail-pill">
+                                    <i class="fa-solid fa-eye"></i>
+                                    <span>Detail</span>
+                                </a>
+                            </td>
+                        </tr>
+                                            <tr>
+                            <!-- # -->
+                            <td class="text-muted fw-bold">11</td>
+
+                            <!-- NO. RM -->
+                            <td class="font-monospace fw-bold text-dark fs-7">RM-2024-001</td>
+
+                            <!-- NAMA PASIEN -->
+                            <td class="fw-medium text-dark">Budi Pratama</td>
+
+                            <!-- DOKTER -->
+                            <td>dr. Budi Santoso, Sp.A</td>
+
+                            <!-- RUANGAN -->
+                            <td>
+                                <span class="badge-ruangan">
+                                    Poli Anak                                </span>
+                            </td>
+
+                            <!-- TGL AUDIT -->
+                            <td class="text-muted">22/10/2026</td>
+
+                            <!-- KELENGKAPAN -->
+                            <td>
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="progress flex-grow-1" style="height: 6px; width: 75px; background-color: #e2e8f0; border-radius: 4px;">
+                                        <div class="progress-bar bg-success" role="progressbar" style="width: 100%;"></div>
+                                    </div>
+                                    <span class="small fw-bold text-success" style="min-width: 38px;">
+                                        100%
+                                    </span>
+                                </div>
+                            </td>
+
+                            <!-- AKSI -->
+                            <td style="text-align: center;">
+                                <a href="http://localhost:8080/audit/detail/3" class="btn-detail-pill">
+                                    <i class="fa-solid fa-eye"></i>
+                                    <span>Detail</span>
+                                </a>
+                            </td>
+                        </tr>
+                                            <tr>
+                            <!-- # -->
+                            <td class="text-muted fw-bold">12</td>
+
+                            <!-- NO. RM -->
+                            <td class="font-monospace fw-bold text-dark fs-7">RM-102411</td>
+
+                            <!-- NAMA PASIEN -->
+                            <td class="fw-medium text-dark">-</td>
+
+                            <!-- DOKTER -->
+                            <td>dr. Maya Kartika, Sp.Em</td>
+
+                            <!-- RUANGAN -->
+                            <td>
+                                <span class="badge-ruangan">
+                                    Instalasi Gawat Darurat                                </span>
+                            </td>
+
+                            <!-- TGL AUDIT -->
+                            <td class="text-muted">22/10/2026</td>
+
+                            <!-- KELENGKAPAN -->
+                            <td>
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="progress flex-grow-1" style="height: 6px; width: 75px; background-color: #e2e8f0; border-radius: 4px;">
+                                        <div class="progress-bar bg-warning" role="progressbar" style="width: 77.27%;"></div>
+                                    </div>
+                                    <span class="small fw-bold text-warning" style="min-width: 38px;">
+                                        77%
+                                    </span>
+                                </div>
+                            </td>
+
+                            <!-- AKSI -->
+                            <td style="text-align: center;">
+                                <a href="http://localhost:8080/audit/detail/2" class="btn-detail-pill">
+                                    <i class="fa-solid fa-eye"></i>
+                                    <span>Detail</span>
+                                </a>
+                            </td>
+                        </tr>
+                                            <tr>
+                            <!-- # -->
+                            <td class="text-muted fw-bold">13</td>
+
+                            <!-- NO. RM -->
+                            <td class="font-monospace fw-bold text-dark fs-7">RM-102941</td>
+
+                            <!-- NAMA PASIEN -->
+                            <td class="fw-medium text-dark">-</td>
+
+                            <!-- DOKTER -->
+                            <td>dr. Siti Rahma, Sp.PD</td>
+
+                            <!-- RUANGAN -->
+                            <td>
+                                <span class="badge-ruangan">
+                                    Poli Penyakit Dalam                                </span>
+                            </td>
+
+                            <!-- TGL AUDIT -->
+                            <td class="text-muted">22/10/2026</td>
+
+                            <!-- KELENGKAPAN -->
+                            <td>
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="progress flex-grow-1" style="height: 6px; width: 75px; background-color: #e2e8f0; border-radius: 4px;">
+                                        <div class="progress-bar bg-warning" role="progressbar" style="width: 86.96%;"></div>
+                                    </div>
+                                    <span class="small fw-bold text-warning" style="min-width: 38px;">
+                                        86%
+                                    </span>
+                                </div>
+                            </td>
+
+                            <!-- AKSI -->
+                            <td style="text-align: center;">
+                                <a href="http://localhost:8080/audit/detail/1" class="btn-detail-pill">
+                                    <i class="fa-solid fa-eye"></i>
+                                    <span>Detail</span>
+                                </a>
+                            </td>
+                        </tr>
+                                                </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    function changeTahun(val) {
+        window.location.href = 'http://localhost:8080/audit?tahun=' + val;
+    }
+</script>
+        </main>
+
+        <!-- Footer -->
+        <footer>
+            <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center gap-2">
+                <div>&copy; 2026 <strong>e-Mediqua</strong> — Sistem Audit Kepatuhan & Kelengkapan Rekam Medis Elektronik</div>
+                <div class="text-muted"><i class="fa-solid fa-shield-halved text-success me-1"></i> Data Minimization & Security Compliant</div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Bootstrap 5.3 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Sidebar Toggle for Mobile
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        if (sidebarToggle) {
+            sidebarToggle.addEventListener('click', () => {
+                document.getElementById('sidebar').classList.toggle('show');
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,1077 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detail Rekam Medis: RM-2026-003 | e-Mediqua | Audit Kelengkapan RME</title>
+    <!-- Google Fonts: Plus Jakarta Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Bootstrap 5.3 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        :root {
+            --primary: #0284c7;
+            --primary-dark: #0369a1;
+            --primary-light: #e0f2fe;
+            --secondary: #0f172a;
+            --sidebar-bg: #0f172a;
+            --sidebar-hover: #1e293b;
+            --sidebar-text: #94a3b8;
+            --sidebar-text-active: #ffffff;
+            --accent-green: #10b981;
+            --accent-yellow: #f59e0b;
+            --accent-red: #ef4444;
+            --bg-body: #f8fafc;
+            --card-border: #e2e8f0;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-body);
+            color: #334155;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Styles */
+        #sidebar {
+            width: 260px;
+            min-height: 100vh;
+            background-color: var(--sidebar-bg);
+            color: var(--sidebar-text);
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            z-index: 1000;
+            transition: all 0.3s ease;
+            box-shadow: 4px 0 15px rgba(0, 0, 0, 0.05);
+        }
+
+        #sidebar .brand-wrapper {
+            padding: 1.5rem 1.25rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        #sidebar .brand-logo {
+            width: 38px;
+            height: 38px;
+            background: linear-gradient(135deg, #0ea5e9, #0284c7);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+            box-shadow: 0 4px 10px rgba(14, 165, 233, 0.3);
+        }
+
+        #sidebar .brand-text {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: #ffffff;
+            letter-spacing: -0.5px;
+        }
+
+        #sidebar .brand-subtitle {
+            font-size: 0.7rem;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+        }
+
+        .nav-category {
+            padding: 1.25rem 1.25rem 0.5rem;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: #64748b;
+            letter-spacing: 1px;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            padding: 0 0.75rem;
+            margin: 0;
+        }
+
+        .sidebar-menu li {
+            margin-bottom: 4px;
+        }
+
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0.75rem 1rem;
+            color: var(--sidebar-text);
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+        }
+
+        .sidebar-menu a:hover {
+            background-color: var(--sidebar-hover);
+            color: var(--sidebar-text-active);
+        }
+
+        .sidebar-menu a.active {
+            background: linear-gradient(90deg, rgba(14, 165, 233, 0.15), rgba(14, 165, 233, 0.05));
+            color: #38bdf8;
+            border-left: 3px solid #38bdf8;
+            font-weight: 600;
+        }
+
+        .sidebar-menu a i {
+            font-size: 1.1rem;
+            width: 20px;
+            text-align: center;
+        }
+
+        /* Content Area */
+        #content-wrapper {
+            margin-left: 260px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+        }
+
+        /* Top Navbar */
+        .top-navbar {
+            background: #ffffff;
+            border-bottom: 1px solid var(--card-border);
+            padding: 0.85rem 1.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 999;
+        }
+
+        .user-pill {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 6px 14px;
+            border-radius: 50px;
+            background: #f1f5f9;
+            border: 1px solid #e2e8f0;
+        }
+
+        .avatar-circle {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #38bdf8, #0284c7);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.85rem;
+        }
+
+        .main-content {
+            padding: 1.75rem;
+            flex: 1;
+        }
+
+        /* Modern Card Styles */
+        .card {
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.02), 0 4px 12px rgba(0,0,0,0.03);
+            background: #ffffff;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-header {
+            background-color: transparent;
+            border-bottom: 1px solid var(--card-border);
+            padding: 1.1rem 1.25rem;
+            font-weight: 700;
+            color: #1e293b;
+        }
+
+        .stat-card {
+            border-radius: 14px;
+            padding: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            background: #ffffff;
+            border: 1px solid var(--card-border);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+        }
+
+        .stat-icon {
+            width: 52px;
+            height: 52px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        /* Status Badges */
+        .badge-lengkap {
+            background-color: #dcfce7;
+            color: #15803d;
+            font-weight: 600;
+            padding: 6px 12px;
+            border-radius: 20px;
+        }
+        .badge-tidak-lengkap {
+            background-color: #fee2e2;
+            color: #b91c1c;
+            font-weight: 600;
+            padding: 6px 12px;
+            border-radius: 20px;
+        }
+        .badge-draft {
+            background-color: #f1f5f9;
+            color: #475569;
+            font-weight: 600;
+            padding: 6px 12px;
+            border-radius: 20px;
+        }
+        .badge-selesai {
+            background-color: #e0f2fe;
+            color: #0369a1;
+            font-weight: 600;
+            padding: 6px 12px;
+            border-radius: 20px;
+        }
+        .badge-diverifikasi {
+            background-color: #ede9fe;
+            color: #6d28d9;
+            font-weight: 600;
+            padding: 6px 12px;
+            border-radius: 20px;
+        }
+
+        footer {
+            padding: 1.25rem 1.75rem;
+            background: #ffffff;
+            border-top: 1px solid var(--card-border);
+            font-size: 0.85rem;
+            color: #64748b;
+        }
+
+        @media (max-width: 991.98px) {
+            #sidebar {
+                margin-left: -260px;
+            }
+            #sidebar.show {
+                margin-left: 0;
+            }
+            #content-wrapper {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Sidebar -->
+    <div id="sidebar" class="d-flex flex-column justify-content-between">
+        <div>
+            <div class="brand-wrapper">
+                <div class="brand-logo" style="background: linear-gradient(135deg, #10b981, #059669); border-radius: 12px; width: 42px; height: 42px; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);">
+                    <i class="fa-solid fa-file-medical text-white fs-5"></i>
+                </div>
+                <div>
+                    <div class="brand-text" style="font-size: 1.2rem; font-weight: 800; letter-spacing: -0.5px;">e-Mediqua</div>
+                    <div class="brand-subtitle" style="font-size: 0.68rem; color: #38bdf8; letter-spacing: 0.6px; font-weight: 600;">AUDIT REKAM MEDIS</div>
+                </div>
+            </div>
+
+            <div class="nav-category" style="color: #64748b; font-size: 0.68rem;">UTAMA</div>
+            <ul class="sidebar-menu">
+                <li>
+                    <a href="http://localhost:8080/dashboard" class="">
+                        <i class="fa-solid fa-chart-pie text-info"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+            </ul>
+
+            <div class="nav-category" style="color: #64748b; font-size: 0.68rem;">AUDIT</div>
+            <ul class="sidebar-menu">
+                <li>
+                    <a href="http://localhost:8080/audit/create" class="" style="">
+                        <i class="fa-solid fa-pen-to-square text-warning"></i>
+                        <span>Input Audit Kuantitatif</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="http://localhost:8080/audit" class="active">
+                        <i class="fa-solid fa-folder-open text-warning"></i>
+                        <span>Daftar Rekam Medis</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="http://localhost:8080/temuan" class="">
+                        <i class="fa-solid fa-triangle-exclamation text-danger"></i>
+                        <span>Tindak Lanjut Temuan</span>
+                    </a>
+                </li>
+            </ul>
+
+            <div class="nav-category" style="color: #64748b; font-size: 0.68rem;">DATA & LAPORAN</div>
+            <ul class="sidebar-menu">
+                <li>
+                    <a href="http://localhost:8080/master" class="">
+                        <i class="fa-solid fa-database" style="color: #a855f7;"></i>
+                        <span>Data Master</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="http://localhost:8080/laporan" class="">
+                        <i class="fa-solid fa-chart-line text-info"></i>
+                        <span>Laporan & Analisis</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="http://localhost:8080/audit/cetak" class="">
+                        <i class="fa-solid fa-print" style="color: #818cf8;"></i>
+                        <span>Cetak Laporan</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Sidebar User & Logout Footer -->
+        <div class="p-3 border-top border-secondary border-opacity-25" style="background: rgba(0,0,0,0.2);">
+            <div class="d-flex flex-column">
+                <span class="text-white-50 small fw-semibold">Administrator Sistem</span>
+                <a href="http://localhost:8080/auth/logout" class="text-decoration-none small mt-1 d-inline-flex align-items-center gap-2" style="color: #94a3b8;">
+                    <span style="display:inline-block; width: 6px; height: 14px; background: #ea580c; border-radius: 2px;"></span>
+                    <span>Logout</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Content Wrapper -->
+    <div id="content-wrapper">
+        <!-- Top Navbar -->
+        <header class="top-navbar">
+            <div class="d-flex align-items-center gap-3">
+                <button class="btn btn-light d-lg-none" id="sidebarToggle">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+                <div class="d-none d-md-block">
+                    <span class="badge bg-primary-subtle text-primary fw-medium px-3 py-2 rounded-pill">
+                        <i class="fa-solid fa-hospital me-1"></i> Permenkes RI No. 24 / 2022
+                    </span>
+                </div>
+            </div>
+
+            <div class="d-flex align-items-center gap-3">
+                <div class="dropdown">
+                    <a href="#" class="text-decoration-none dropdown-toggle user-pill text-dark" data-bs-toggle="dropdown">
+                        <div class="avatar-circle">
+                            A                        </div>
+                        <div class="d-none d-sm-block text-start">
+                            <div class="fw-bold fs-7 lh-1">Administrator Sistem</div>
+                            <small class="text-muted text-uppercase" style="font-size: 0.7rem; font-weight: 600;">
+                                admin                            </small>
+                        </div>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2">
+                        <li>
+                            <div class="px-3 py-2 border-bottom">
+                                <div class="fw-bold">Administrator Sistem</div>
+                                <div class="text-muted small">admin@mediqua.local</div>
+                            </div>
+                        </li>
+                        <li><a class="dropdown-item py-2" href="http://localhost:8080/profile"><i class="fa-solid fa-user me-2 text-primary"></i> Profil & Password</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item py-2 text-danger" href="http://localhost:8080/auth/logout"><i class="fa-solid fa-right-from-bracket me-2"></i> Keluar Sistem</a></li>
+                    </ul>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content Body -->
+        <main class="main-content">
+            <!-- Flash Message Alerts -->
+            
+            
+            
+            <!-- View Content Injection -->
+            <style>
+    /* Styling matching Lampiran 1 & 2 (detail_audit.php) */
+    .eval-card {
+        background: #ffffff;
+        border-radius: 12px;
+        border: 1px solid #e2e8f0;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+        overflow: hidden;
+        margin-bottom: 2rem;
+    }
+    .eval-card-header {
+        padding: 1.25rem 1.5rem;
+        background: #ffffff;
+        border-bottom: 1px solid #e2e8f0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .eval-card-title {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: #0f172a;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .eval-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 0;
+    }
+    .eval-table th {
+        background-color: #f8fafc;
+        padding: 1rem 1.25rem;
+        font-size: 0.8rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.6px;
+        color: #475569;
+        border-bottom: 1px solid #e2e8f0;
+    }
+    .eval-table td {
+        padding: 0.95rem 1.25rem;
+        vertical-align: middle;
+        border-bottom: 1px solid #f1f5f9;
+        font-size: 0.9rem;
+    }
+    .eval-table tr:hover {
+        background-color: #fafafa;
+    }
+
+    /* Status Button Radios matching screenshot */
+    .btn-status-group {
+        display: inline-flex;
+        gap: 8px;
+    }
+    .status-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 14px;
+        border-radius: 6px;
+        font-size: 0.825rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        user-select: none;
+        border: 1px solid transparent;
+        text-decoration: none;
+    }
+    /* Lengkap Button */
+    .status-btn-lengkap {
+        background-color: #f0fdf4;
+        border-color: #86efac;
+        color: #15803d;
+    }
+    .status-btn-lengkap:hover {
+        background-color: #dcfce7;
+    }
+    .status-btn-lengkap.active {
+        background-color: #22c55e;
+        border-color: #16a34a;
+        color: #ffffff !important;
+        box-shadow: 0 2px 6px rgba(34, 197, 94, 0.3);
+    }
+    /* Tidak Button */
+    .status-btn-tidak {
+        background-color: #fef2f2;
+        border-color: #fca5a5;
+        color: #dc2626;
+    }
+    .status-btn-tidak:hover {
+        background-color: #fee2e2;
+    }
+    .status-btn-tidak.active {
+        background-color: #ef4444;
+        border-color: #dc2626;
+        color: #ffffff !important;
+        box-shadow: 0 2px 6px rgba(239, 68, 68, 0.3);
+    }
+
+    .catatan-input {
+        border-radius: 8px;
+        border: 1px solid #cbd5e1;
+        padding: 0.55rem 0.85rem;
+        font-size: 0.875rem;
+        color: #334155;
+        width: 100%;
+        max-width: 480px;
+        transition: all 0.2s;
+    }
+    .catatan-input:focus {
+        border-color: #0d9488;
+        box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.15);
+        outline: none;
+    }
+    .btn-simpan-eval {
+        background-color: #0d9488;
+        color: #ffffff;
+        font-weight: 700;
+        font-size: 0.95rem;
+        padding: 0.75rem 1.75rem;
+        border-radius: 8px;
+        border: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.2s ease;
+    }
+    .btn-simpan-eval:hover {
+        background-color: #0f766e;
+        color: #ffffff;
+        box-shadow: 0 4px 12px rgba(13, 148, 136, 0.25);
+    }
+    .patient-summary-box {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 1.25rem 1.5rem;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+    }
+</style>
+
+<!-- Top Breadcrumb & Page Actions -->
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-4 pb-2 border-bottom border-light-subtle">
+    <div>
+        <h1 class="h3 fw-bold text-dark mb-0" style="letter-spacing: -0.5px;">Detail Rekam Medis</h1>
+        <div class="text-muted small mt-1">
+            <span>e-Mediqua</span> &rsaquo; <span>Daftar Rekam Medis</span> &rsaquo; <span>Detail Evaluasi</span>
+        </div>
+    </div>
+    <div class="d-flex align-items-center gap-2">
+        <a href="http://localhost:8080/audit" class="btn btn-outline-secondary btn-sm px-3 rounded-pill fw-semibold">
+            <i class="fa-solid fa-arrow-left me-1"></i> Kembali
+        </a>
+        <a href="http://localhost:8080/audit/cetak/8" target="_blank" class="btn btn-sm text-white px-3 rounded-pill fw-semibold shadow-sm" style="background: #0d9488;">
+            <i class="fa-solid fa-print me-1"></i> Cetak Hasil Audit Pasien
+        </a>
+    </div>
+</div>
+
+<!-- Flash Messages -->
+
+
+<!-- Context Summary Card -->
+<div class="patient-summary-box">
+    <div class="row g-3 align-items-center">
+        <div class="col-sm-6 col-md-3">
+            <small class="text-muted d-block fw-semibold" style="font-size: 0.75rem;">NO. REKAM MEDIS</small>
+            <span class="fs-6 fw-bold font-monospace text-dark">RM-2026-003</span>
+            <small class="text-muted d-block">AUD-20261022-0012</small>
+        </div>
+        <div class="col-sm-6 col-md-3">
+            <small class="text-muted d-block fw-semibold" style="font-size: 0.75rem;">NAMA PASIEN</small>
+            <span class="fs-6 fw-bold text-dark">Sdr. Chandra</span>
+            <small class="text-muted d-block">Kunjungan: REG-2026-003</small>
+        </div>
+        <div class="col-sm-6 col-md-3">
+            <small class="text-muted d-block fw-semibold" style="font-size: 0.75rem;">DOKTER & RUANGAN</small>
+            <span class="fw-bold text-dark d-block">dr. Budi Santoso, Sp.A</span>
+            <span class="badge bg-light text-secondary border">Ruang Anggrek</span>
+        </div>
+        <div class="col-sm-6 col-md-3 text-sm-end">
+            <small class="text-muted d-block fw-semibold" style="font-size: 0.75rem;">CAPAIAN KELENGKAPAN</small>
+            <div class="d-inline-flex align-items-center gap-2 mt-1">
+                <span class="fs-4 fw-bold" style="color: #dc2626;">
+                    45%
+                </span>
+                                    <span class="badge bg-danger-subtle text-danger border border-danger-subtle rounded-pill px-2.5">Belum Lengkap</span>
+                            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Main Evaluation Table Card (Matching Lampiran 1 & 2) -->
+<div class="eval-card">
+    <div class="eval-card-header">
+        <h5 class="eval-card-title">
+            <span style="font-size: 1.25rem;">📋</span> Komponen Audit Kuantitatif
+        </h5>
+        <span class="badge rounded-pill" style="background-color: #e0f2fe; color: #0284c7; font-weight: 700; font-size: 0.85rem; padding: 0.45rem 0.85rem;">
+            10 Komponen
+        </span>
+    </div>
+
+    <form action="http://localhost:8080/audit/simpan-komponen/8" method="post">
+        <input type="hidden" name="csrf_test_name" value="1cb53e90d2e22571be6d5fe1ca7a9217">
+        <div class="table-responsive">
+            <table class="eval-table">
+                <thead>
+                    <tr>
+                        <th style="width: 50px;">#</th>
+                        <th>KOMPONEN AUDIT</th>
+                        <th style="width: 230px;">STATUS</th>
+                        <th>CATATAN</th>
+                    </tr>
+                </thead>
+                <tbody>
+                                            <tr>
+                            <!-- # -->
+                            <td class="text-muted fw-semibold">1</td>
+
+                            <!-- Komponen Audit Name -->
+                            <td class="fw-semibold text-dark">
+                                Identitas Pasien                            </td>
+
+                            <!-- Toggle Status Buttons (Lengkap / Tidak) -->
+                            <td>
+                                <input type="hidden" name="items[30][status]" id="status_input_30" value="lengkap">
+                                <div class="btn-status-group">
+                                    <button type="button" 
+                                            class="status-btn status-btn-lengkap active" 
+                                            id="btn_lengkap_30" 
+                                            onclick="setStatus(30, 'lengkap')">
+                                        <i class="fa-solid fa-square-check"></i>
+                                        <span>Lengkap</span>
+                                    </button>
+                                    <button type="button" 
+                                            class="status-btn status-btn-tidak " 
+                                            id="btn_tidak_30" 
+                                            onclick="setStatus(30, 'tidak_lengkap')">
+                                        <i class="fa-solid fa-xmark"></i>
+                                        <span>Tidak</span>
+                                    </button>
+                                </div>
+                            </td>
+
+                            <!-- Catatan Input -->
+                            <td>
+                                <input type="text" 
+                                       name="items[30][catatan]" 
+                                       value="" 
+                                       class="catatan-input" 
+                                       placeholder="Catatan (opsional)">
+                            </td>
+                        </tr>
+                                            <tr>
+                            <!-- # -->
+                            <td class="text-muted fw-semibold">2</td>
+
+                            <!-- Komponen Audit Name -->
+                            <td class="fw-semibold text-dark">
+                                Laporan Anamnesis                            </td>
+
+                            <!-- Toggle Status Buttons (Lengkap / Tidak) -->
+                            <td>
+                                <input type="hidden" name="items[31][status]" id="status_input_31" value="lengkap">
+                                <div class="btn-status-group">
+                                    <button type="button" 
+                                            class="status-btn status-btn-lengkap active" 
+                                            id="btn_lengkap_31" 
+                                            onclick="setStatus(31, 'lengkap')">
+                                        <i class="fa-solid fa-square-check"></i>
+                                        <span>Lengkap</span>
+                                    </button>
+                                    <button type="button" 
+                                            class="status-btn status-btn-tidak " 
+                                            id="btn_tidak_31" 
+                                            onclick="setStatus(31, 'tidak_lengkap')">
+                                        <i class="fa-solid fa-xmark"></i>
+                                        <span>Tidak</span>
+                                    </button>
+                                </div>
+                            </td>
+
+                            <!-- Catatan Input -->
+                            <td>
+                                <input type="text" 
+                                       name="items[31][catatan]" 
+                                       value="" 
+                                       class="catatan-input" 
+                                       placeholder="Catatan (opsional)">
+                            </td>
+                        </tr>
+                                            <tr>
+                            <!-- # -->
+                            <td class="text-muted fw-semibold">3</td>
+
+                            <!-- Komponen Audit Name -->
+                            <td class="fw-semibold text-dark">
+                                Laporan Pemeriksaan Fisik                            </td>
+
+                            <!-- Toggle Status Buttons (Lengkap / Tidak) -->
+                            <td>
+                                <input type="hidden" name="items[32][status]" id="status_input_32" value="lengkap">
+                                <div class="btn-status-group">
+                                    <button type="button" 
+                                            class="status-btn status-btn-lengkap active" 
+                                            id="btn_lengkap_32" 
+                                            onclick="setStatus(32, 'lengkap')">
+                                        <i class="fa-solid fa-square-check"></i>
+                                        <span>Lengkap</span>
+                                    </button>
+                                    <button type="button" 
+                                            class="status-btn status-btn-tidak " 
+                                            id="btn_tidak_32" 
+                                            onclick="setStatus(32, 'tidak_lengkap')">
+                                        <i class="fa-solid fa-xmark"></i>
+                                        <span>Tidak</span>
+                                    </button>
+                                </div>
+                            </td>
+
+                            <!-- Catatan Input -->
+                            <td>
+                                <input type="text" 
+                                       name="items[32][catatan]" 
+                                       value="" 
+                                       class="catatan-input" 
+                                       placeholder="Catatan (opsional)">
+                            </td>
+                        </tr>
+                                            <tr>
+                            <!-- # -->
+                            <td class="text-muted fw-semibold">4</td>
+
+                            <!-- Komponen Audit Name -->
+                            <td class="fw-semibold text-dark">
+                                Informed Consent                            </td>
+
+                            <!-- Toggle Status Buttons (Lengkap / Tidak) -->
+                            <td>
+                                <input type="hidden" name="items[33][status]" id="status_input_33" value="tidak_lengkap">
+                                <div class="btn-status-group">
+                                    <button type="button" 
+                                            class="status-btn status-btn-lengkap " 
+                                            id="btn_lengkap_33" 
+                                            onclick="setStatus(33, 'lengkap')">
+                                        <i class="fa-solid fa-square-check"></i>
+                                        <span>Lengkap</span>
+                                    </button>
+                                    <button type="button" 
+                                            class="status-btn status-btn-tidak active" 
+                                            id="btn_tidak_33" 
+                                            onclick="setStatus(33, 'tidak_lengkap')">
+                                        <i class="fa-solid fa-xmark"></i>
+                                        <span>Tidak</span>
+                                    </button>
+                                </div>
+                            </td>
+
+                            <!-- Catatan Input -->
+                            <td>
+                                <input type="text" 
+                                       name="items[33][catatan]" 
+                                       value="Perlu perbaikan catatan klinis" 
+                                       class="catatan-input" 
+                                       placeholder="Catatan (opsional)">
+                            </td>
+                        </tr>
+                                            <tr>
+                            <!-- # -->
+                            <td class="text-muted fw-semibold">5</td>
+
+                            <!-- Komponen Audit Name -->
+                            <td class="fw-semibold text-dark">
+                                Ringkasan Pulang (Discharge Summary)                            </td>
+
+                            <!-- Toggle Status Buttons (Lengkap / Tidak) -->
+                            <td>
+                                <input type="hidden" name="items[34][status]" id="status_input_34" value="tidak_lengkap">
+                                <div class="btn-status-group">
+                                    <button type="button" 
+                                            class="status-btn status-btn-lengkap " 
+                                            id="btn_lengkap_34" 
+                                            onclick="setStatus(34, 'lengkap')">
+                                        <i class="fa-solid fa-square-check"></i>
+                                        <span>Lengkap</span>
+                                    </button>
+                                    <button type="button" 
+                                            class="status-btn status-btn-tidak active" 
+                                            id="btn_tidak_34" 
+                                            onclick="setStatus(34, 'tidak_lengkap')">
+                                        <i class="fa-solid fa-xmark"></i>
+                                        <span>Tidak</span>
+                                    </button>
+                                </div>
+                            </td>
+
+                            <!-- Catatan Input -->
+                            <td>
+                                <input type="text" 
+                                       name="items[34][catatan]" 
+                                       value="Perlu perbaikan catatan klinis" 
+                                       class="catatan-input" 
+                                       placeholder="Catatan (opsional)">
+                            </td>
+                        </tr>
+                                            <tr>
+                            <!-- # -->
+                            <td class="text-muted fw-semibold">6</td>
+
+                            <!-- Komponen Audit Name -->
+                            <td class="fw-semibold text-dark">
+                                Autentikasi Dokter (Tanda Tangan)                            </td>
+
+                            <!-- Toggle Status Buttons (Lengkap / Tidak) -->
+                            <td>
+                                <input type="hidden" name="items[35][status]" id="status_input_35" value="tidak_lengkap">
+                                <div class="btn-status-group">
+                                    <button type="button" 
+                                            class="status-btn status-btn-lengkap " 
+                                            id="btn_lengkap_35" 
+                                            onclick="setStatus(35, 'lengkap')">
+                                        <i class="fa-solid fa-square-check"></i>
+                                        <span>Lengkap</span>
+                                    </button>
+                                    <button type="button" 
+                                            class="status-btn status-btn-tidak active" 
+                                            id="btn_tidak_35" 
+                                            onclick="setStatus(35, 'tidak_lengkap')">
+                                        <i class="fa-solid fa-xmark"></i>
+                                        <span>Tidak</span>
+                                    </button>
+                                </div>
+                            </td>
+
+                            <!-- Catatan Input -->
+                            <td>
+                                <input type="text" 
+                                       name="items[35][catatan]" 
+                                       value="Perlu perbaikan catatan klinis" 
+                                       class="catatan-input" 
+                                       placeholder="Catatan (opsional)">
+                            </td>
+                        </tr>
+                                            <tr>
+                            <!-- # -->
+                            <td class="text-muted fw-semibold">7</td>
+
+                            <!-- Komponen Audit Name -->
+                            <td class="fw-semibold text-dark">
+                                Tanggal &amp; Waktu Pemeriksaan                            </td>
+
+                            <!-- Toggle Status Buttons (Lengkap / Tidak) -->
+                            <td>
+                                <input type="hidden" name="items[36][status]" id="status_input_36" value="tidak_lengkap">
+                                <div class="btn-status-group">
+                                    <button type="button" 
+                                            class="status-btn status-btn-lengkap " 
+                                            id="btn_lengkap_36" 
+                                            onclick="setStatus(36, 'lengkap')">
+                                        <i class="fa-solid fa-square-check"></i>
+                                        <span>Lengkap</span>
+                                    </button>
+                                    <button type="button" 
+                                            class="status-btn status-btn-tidak active" 
+                                            id="btn_tidak_36" 
+                                            onclick="setStatus(36, 'tidak_lengkap')">
+                                        <i class="fa-solid fa-xmark"></i>
+                                        <span>Tidak</span>
+                                    </button>
+                                </div>
+                            </td>
+
+                            <!-- Catatan Input -->
+                            <td>
+                                <input type="text" 
+                                       name="items[36][catatan]" 
+                                       value="Perlu perbaikan catatan klinis" 
+                                       class="catatan-input" 
+                                       placeholder="Catatan (opsional)">
+                            </td>
+                        </tr>
+                                            <tr>
+                            <!-- # -->
+                            <td class="text-muted fw-semibold">8</td>
+
+                            <!-- Komponen Audit Name -->
+                            <td class="fw-semibold text-dark">
+                                Diagnosis Utama (ICD-10)                            </td>
+
+                            <!-- Toggle Status Buttons (Lengkap / Tidak) -->
+                            <td>
+                                <input type="hidden" name="items[37][status]" id="status_input_37" value="tidak_lengkap">
+                                <div class="btn-status-group">
+                                    <button type="button" 
+                                            class="status-btn status-btn-lengkap " 
+                                            id="btn_lengkap_37" 
+                                            onclick="setStatus(37, 'lengkap')">
+                                        <i class="fa-solid fa-square-check"></i>
+                                        <span>Lengkap</span>
+                                    </button>
+                                    <button type="button" 
+                                            class="status-btn status-btn-tidak active" 
+                                            id="btn_tidak_37" 
+                                            onclick="setStatus(37, 'tidak_lengkap')">
+                                        <i class="fa-solid fa-xmark"></i>
+                                        <span>Tidak</span>
+                                    </button>
+                                </div>
+                            </td>
+
+                            <!-- Catatan Input -->
+                            <td>
+                                <input type="text" 
+                                       name="items[37][catatan]" 
+                                       value="Perlu perbaikan catatan klinis" 
+                                       class="catatan-input" 
+                                       placeholder="Catatan (opsional)">
+                            </td>
+                        </tr>
+                                            <tr>
+                            <!-- # -->
+                            <td class="text-muted fw-semibold">9</td>
+
+                            <!-- Komponen Audit Name -->
+                            <td class="fw-semibold text-dark">
+                                Rencana Tindak Lanjut                            </td>
+
+                            <!-- Toggle Status Buttons (Lengkap / Tidak) -->
+                            <td>
+                                <input type="hidden" name="items[38][status]" id="status_input_38" value="tidak_lengkap">
+                                <div class="btn-status-group">
+                                    <button type="button" 
+                                            class="status-btn status-btn-lengkap " 
+                                            id="btn_lengkap_38" 
+                                            onclick="setStatus(38, 'lengkap')">
+                                        <i class="fa-solid fa-square-check"></i>
+                                        <span>Lengkap</span>
+                                    </button>
+                                    <button type="button" 
+                                            class="status-btn status-btn-tidak active" 
+                                            id="btn_tidak_38" 
+                                            onclick="setStatus(38, 'tidak_lengkap')">
+                                        <i class="fa-solid fa-xmark"></i>
+                                        <span>Tidak</span>
+                                    </button>
+                                </div>
+                            </td>
+
+                            <!-- Catatan Input -->
+                            <td>
+                                <input type="text" 
+                                       name="items[38][catatan]" 
+                                       value="Perlu perbaikan catatan klinis" 
+                                       class="catatan-input" 
+                                       placeholder="Catatan (opsional)">
+                            </td>
+                        </tr>
+                                            <tr>
+                            <!-- # -->
+                            <td class="text-muted fw-semibold">10</td>
+
+                            <!-- Komponen Audit Name -->
+                            <td class="fw-semibold text-dark">
+                                Catatan Keperawatan                            </td>
+
+                            <!-- Toggle Status Buttons (Lengkap / Tidak) -->
+                            <td>
+                                <input type="hidden" name="items[39][status]" id="status_input_39" value="tidak_lengkap">
+                                <div class="btn-status-group">
+                                    <button type="button" 
+                                            class="status-btn status-btn-lengkap " 
+                                            id="btn_lengkap_39" 
+                                            onclick="setStatus(39, 'lengkap')">
+                                        <i class="fa-solid fa-square-check"></i>
+                                        <span>Lengkap</span>
+                                    </button>
+                                    <button type="button" 
+                                            class="status-btn status-btn-tidak active" 
+                                            id="btn_tidak_39" 
+                                            onclick="setStatus(39, 'tidak_lengkap')">
+                                        <i class="fa-solid fa-xmark"></i>
+                                        <span>Tidak</span>
+                                    </button>
+                                </div>
+                            </td>
+
+                            <!-- Catatan Input -->
+                            <td>
+                                <input type="text" 
+                                       name="items[39][catatan]" 
+                                       value="Perlu perbaikan catatan klinis" 
+                                       class="catatan-input" 
+                                       placeholder="Catatan (opsional)">
+                            </td>
+                        </tr>
+                                    </tbody>
+            </table>
+        </div>
+
+        <!-- Form Bottom Actions -->
+        <div class="p-3 bg-light border-top d-flex justify-content-between align-items-center">
+            <a href="http://localhost:8080/audit" class="text-decoration-none text-muted fw-semibold small">
+                Batal
+            </a>
+            <button type="submit" class="btn-simpan-eval">
+                <i class="fa-solid fa-floppy-disk"></i>
+                <span>Simpan Komponen Audit</span>
+            </button>
+        </div>
+    </form>
+</div>
+
+<script>
+    function setStatus(itemId, status) {
+        document.getElementById('status_input_' + itemId).value = status;
+        const btnLengkap = document.getElementById('btn_lengkap_' + itemId);
+        const btnTidak = document.getElementById('btn_tidak_' + itemId);
+
+        if (status === 'lengkap') {
+            btnLengkap.classList.add('active');
+            btnTidak.classList.remove('active');
+        } else {
+            btnTidak.classList.add('active');
+            btnLengkap.classList.remove('active');
+        }
+    }
+</script>
+        </main>
+
+        <!-- Footer -->
+        <footer>
+            <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center gap-2">
+                <div>&copy; 2026 <strong>e-Mediqua</strong> — Sistem Audit Kepatuhan & Kelengkapan Rekam Medis Elektronik</div>
+                <div class="text-muted"><i class="fa-solid fa-shield-halved text-success me-1"></i> Data Minimization & Security Compliant</div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Bootstrap 5.3 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Sidebar Toggle for Mobile
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        if (sidebarToggle) {
+            sidebarToggle.addEventListener('click', () => {
+                document.getElementById('sidebar').classList.toggle('show');
+            });
+        }
+    </script>
+</body>
+</html>
